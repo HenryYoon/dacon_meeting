@@ -1,0 +1,9 @@
+transformers
+datasets
+numpy
+pandas
+konlpy
+sentencepiece
+tweepy==3.10
+dacon_submit_api-0.0.4-py3-none-any.whl
+rouge_score
