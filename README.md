@@ -1,11 +1,29 @@
-# dacon_meeting
+This repository (repo) contains source code which is submitted to the Dacon competition: [AI 기반 회의 녹취록 요약 경진대회](https://dacon.io/competitions/official/235813/overview/description).
 
-This is the repository for my source code when attending the [DACON competition (AI 기반 회의 녹취록 요약 경진대회)](https://dacon.io/competitions/official/235813/overview/description).
+In this repo, I applied Fine-tuning model with provided dataset based on ''ainize/kobart-news'' pretrained model.
 
-## Strategy
+As a result, I attained rank 40 out of 430 (top 9%).
 
-Fine-tuning model with provided dataset based on ''ainize/kobart-news'' pretrained model.
 
-## Result
+## Usage
 
-40 / 430 (10% rank)
+First, you need to install required libraries with this command:
+
+```python
+pip install -r requirements.txt
+```
+
+If you want to run our code, please input this command
+
+```python
+python comp.py
+```
+
+## Tech Stack
+
+* Data: Pandas, Datasets (Huggingface)
+* AI: Transformers, PyTorch
+
+## License
+
+[GNU GENERAL PUBLIC](LICENSE) © Hee Seung Yun

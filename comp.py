@@ -1,26 +1,18 @@
 # -*- coding: utf-8 -*-
 
-import argparse
-
-from transformers import (
-    BartForConditionalGeneration,
-    PreTrainedTokenizerFast,
-    AutoModelForSeq2SeqLM,
-    AutoTokenizer,
-    DataCollatorForSeq2Seq,
-    Seq2SeqTrainingArguments,
-    Seq2SeqTrainer)
-
-from datasets import load_metric, Dataset
-from dacon_submit_api import dacon_submit_api
-
-import numpy as np
-import pandas as pd
-import json
-import os
-
-from konlpy.tag import Kkma
 import warnings
+import os
+import json
+import pandas as pd
+from datasets import load_metric, Dataset
+import argparse
+from transformers import AutoModelForSeq2SeqLM
+from transformers import AutoTokenizer
+from transformers import DataCollatorForSeq2Seq
+from transformers import Seq2SeqTrainingArguments
+from transformers import Seq2SeqTrainer
+
+
 warnings.filterwarnings(action='ignore')
 
 parser = argparse.ArgumentParser()
@@ -113,29 +105,6 @@ def preprocess_function(batch):
     return batch
 
 
-# def compute_metrics(eval_pred):
-#     predictions, labels = eval_pred
-#     kkma = Kkma()
-
-#     decoded_preds = tokenizer(predictions, skip_special_tokens=True)
-#     # Replace -100 in the labels as we can't decode them.
-#     labels = np.where(labels != -100, labels, tokenizer.pad_token_id)
-#     decoded_labels = tokenizer(labels, skip_special_tokens=True)
-
-#     # Rouge expects a newline after each sentence
-#     decoded_preds = ["\n".join(kkma.sentences(pred.strip())) for pred in decoded_preds]
-#     decoded_labels = ["\n".join(kkma.sentences(label.strip())) for label in decoded_labels]
-
-#     result = metric.compute(predictions=decoded_preds, references=decoded_labels, use_stemmer=True)
-#     # Extract a few results
-#     result = {key: value.mid.fmeasure * 100 for key, value in result.items()}
-
-#     # Add mean generated length
-#     prediction_lens = [np.count_nonzero(pred != tokenizer.pad_token_id) for pred in predictions]
-#     result["gen_len"] = np.mean(prediction_lens)
-
-#     return {k: round(v, 4) for k, v in result.items()}
-
 train_data = Dataset.from_pandas(df_train)
 val_data = Dataset.from_pandas(df_val)
 test_data = Dataset.from_pandas(test)
@@ -198,7 +167,6 @@ trainer = Seq2SeqTrainer(
     eval_dataset=val_data,
     tokenizer=tokenizer,
     optimizers='AdamW',
-    # compute_metrics=compute_metrics,
 )
 
 trainer.train()
@@ -243,11 +211,3 @@ label_str = results["summary"]
 sample_submission = pd.read_csv("./data/sample_submission.csv")
 sample_submission['summary'] = label_str
 sample_submission.to_csv('sub1.csv', index=False)
-
-result = dacon_submit_api.post_submission_file(
-    'sub1.csv',
-    '63af198a705c8b8bcb5c3f0bcd84b1c8e8435c9da10875843871a770c269d0e6',
-    '235813',
-    '영락태왕',
-    'submission'
-)
